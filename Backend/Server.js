@@ -2,20 +2,24 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const { Pool } = require("pg");
+const path = require("path");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Conexión a PostgreSQL en Railway 
+// Conexión a PostgreSQL en Railway
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
 
-// Ruta de prueba
+// Servir archivos estáticos desde la carpeta Frontend
+app.use(express.static(path.join(__dirname, "../Frontend")));
+
+// Ruta raíz: devuelve index.html por defecto
 app.get("/", (req, res) => {
-  res.send("Servidor BeautiQ funcionando Correctamente");
+  res.sendFile(path.join(__dirname, "../Frontend/index.html"));
 });
 
 // Registro de usuario
