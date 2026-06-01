@@ -15,11 +15,11 @@ const pool = new Pool({
 });
 
 // Servir archivos estáticos desde la carpeta Frontend
-app.use(express.static(path.join(__dirname, "../Frontend")));
+app.use(express.static(path.join(__dirname, "../Fronted")));
 
 // Ruta raíz: devuelve index.html por defecto
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../Frontend/index.html"));
+  res.sendFile(path.join(__dirname, "../Fronted/index.html"));
 });
 
 // Registro de usuario
