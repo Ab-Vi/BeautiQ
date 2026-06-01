@@ -78,40 +78,49 @@
   </div>
 
   <!-- Script integrado -->
- <script>
+<script>
   document.addEventListener("DOMContentLoaded", () => {
     const loginForm = document.getElementById("loginForm");
     const mensaje = document.getElementById("mensajeBienvenida");
 
-    loginForm.addEventListener("submit", (e) => {
+    loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const email = document.getElementById("email").value.trim();
+      const correo = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
       const role = document.querySelector("input[name='role']:checked").value;
 
-      // Obtener usuarios guardados en registro.html
-      let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+      try {
+        const res = await fetch("https://beautiq-hf9u.onrender.com/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ correo, password, role })
+        });
 
-      // Buscar coincidencia
-      const usuario = usuarios.find(u => u.correo === email && u.password === password && u.role === role);
+        const data = await res.json();
 
-      if(usuario){
-        localStorage.setItem("usuarioActivo", email);
+        if (data.success) {
+          localStorage.setItem("usuarioActivo", correo);
 
-        // Redirigir según rol
-        if(role === "cliente"){
-          window.location.href = "menu.html";
-        } else if(role === "profesional"){
-          window.location.href = "admin.html";
+          // Redirigir según rol
+          if (role === "cliente") {
+            window.location.href = "menu.html";
+          } else if (role === "profesional") {
+            window.location.href = "admin.html";
+          }
+        } else {
+          mensaje.textContent = data.message || "Credenciales inválidas";
+          mensaje.style.color = "red";
         }
-      } else {
-        mensaje.textContent = "Credenciales inválidas";
+      } catch (error) {
+        mensaje.textContent = "Error de conexión con el servidor.";
         mensaje.style.color = "red";
+        console.error(error);
       }
     });
   });
 </script>
+
 
 
 </body>
