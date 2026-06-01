@@ -27,7 +27,7 @@ app.post("/registro", async (req, res) => {
   const { nombre, correo, telefono, password, role } = req.body;
   try {
     await pool.query(
-      "INSERT INTO usuarios (nombre, correo, telefono, password, role) VALUES ($1, $2, $3, $4, $5)",
+      "INSERT INTO Usuarios (nombre, correo, telefono, password, role) VALUES ($1, $2, $3, $4, $5)",
       [nombre, correo, telefono, password, role]
     );
     res.json({ success: true, message: "Usuario registrado correctamente" });
@@ -42,7 +42,7 @@ app.post("/login", async (req, res) => {
   const { correo, password } = req.body;
   try {
     const result = await pool.query(
-      "SELECT * FROM usuarios WHERE correo = $1 AND password = $2",
+      "SELECT * FROM Usuarios WHERE correo = $1 AND password = $2",
       [correo, password]
     );
     if (result.rows.length > 0) {
