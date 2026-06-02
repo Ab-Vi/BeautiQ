@@ -65,18 +65,23 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <label>Fecha:</label>
-          <input type="date" id="fechaMaria" class="form-control mb-3">
-          <label>Hora:</label>
-          <div id="horasMaria" class="d-flex gap-2 mt-2">
-  <button class="btn btn-outline-secondary" onclick="seleccionarHora('10:00')">10:00</button>
-  <button class="btn btn-outline-secondary" onclick="seleccionarHora('11:00')">11:00</button>
-  <button class="btn btn-outline-secondary" onclick="seleccionarHora('14:00')">14:00</button>
-</div>
-
+          <div class="mb-3">
+            <label class="form-label">Tu nombre</label>
+            <input type="text" id="nombreCliente" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Fecha</label>
+            <input type="date" id="fechaMaria" class="form-control" required>
+          </div>
+          <div class="mb-3" id="horasMaria">
+            <label class="form-label">Hora</label><br>
+            <button type="button" class="btn btn-outline-secondary" onclick="seleccionarHora('10:00')">10:00</button>
+            <button type="button" class="btn btn-outline-secondary" onclick="seleccionarHora('11:00')">11:00</button>
+            <button type="button" class="btn btn-outline-secondary" onclick="seleccionarHora('14:00')">14:00</button>
+          </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-pink" onclick="confirmarCita(detalleOferta.nombre, detalleOferta.especialidad, detalleOferta.precio)">Confirmar cita</button>
+          <button class="btn btn-pink" onclick="confirmarCita()">Confirmar cita</button>
         </div>
       </div>
     </div>
