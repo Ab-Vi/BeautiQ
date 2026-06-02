@@ -165,6 +165,21 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error(err);
     }
   } 
+  // Función para eliminar oferta
+async function eliminarOferta(id) {
+  if (!confirm("¿Seguro que quieres eliminar esta oferta?")) return;
+  try {
+    const res = await fetch(`https://beautiq-hf9u.onrender.com/ofertas/${id}`, {
+      method: "DELETE"
+    });
+    const data = await res.json();
+    alert(data.message || "Oferta eliminada");
+    mostrarMisOfertas(); // refresca la lista
+  } catch (err) {
+    alert("Error al eliminar la oferta");
+    console.error(err);
+  }
+}
 
   // Mostrar historial (ejemplo, puedes adaptarlo a tu backend de citas)
   async function mostrarHistorialAdmin() {
