@@ -15,6 +15,12 @@
     .btn-pink:hover { background-color: #F9A8D4; }
     .text-lila { color: #A78BFA; }
     .card-title { color: #A78BFA; font-weight: bold; }
+    .card-img-top {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
@@ -33,16 +39,10 @@
   </nav>
 
   <!-- Sección Explorar -->
-  <div id="explorarSection" class="container mt-4">
-    <h2 class="text-lila mb-4">Explorar Servicios</h2>
-    <p class="text-muted">Aquí se mostrarán las ofertas creadas por los profesionales.</p>
-  </div>
+  <div id="explorarSection" class="container mt-4"></div>
 
   <!-- Sección Historial -->
-  <div id="historialSection" class="container mt-4" style="display:none;">
-    <h2 class="text-lila mb-4">Historial de Citas</h2>
-    <p class="text-muted">Aquí el administrador puede revisar las citas y comprobantes.</p>
-  </div>
+  <div id="historialSection" class="container mt-4" style="display:none;"></div>
 
   <!-- Sección Mis Ofertas -->
   <div id="ofertasSection" class="container mt-4" style="display:none;">
@@ -50,39 +50,39 @@
     <form id="formOferta">
       <div class="mb-3">
         <label class="form-label">Nombre completo</label>
-        <input type="text" class="form-control" placeholder="Ejemplo: María González" required>
+        <input id="nombre" type="text" class="form-control" required>
       </div>
       <div class="mb-3">
         <label class="form-label">Especialidad</label>
-        <input type="text" class="form-control" placeholder="Ejemplo: Peluquería y Maquillaje" required>
+        <input id="especialidad" type="text" class="form-control" required>
       </div>
       <div class="mb-3">
         <label class="form-label">Ubicación</label>
-        <input type="text" class="form-control" placeholder="Ejemplo: Centro" required>
+        <input id="ubicacion" type="text" class="form-control" required>
       </div>
       <div class="mb-3">
         <label class="form-label">Reseñas</label>
-        <input type="text" class="form-control" placeholder="Ejemplo: 4.8 (32 reseñas)">
+        <input id="reseñas" type="text" class="form-control">
       </div>
       <div class="mb-3">
         <label class="form-label">Precio</label>
-        <input type="text" class="form-control" placeholder="Ejemplo: $50/hora" required>
+        <input id="precio" type="text" class="form-control" required>
       </div>
       <div class="mb-3">
         <label class="form-label">Sobre el profesional</label>
-        <textarea class="form-control" placeholder="Describe tu experiencia y compromiso..." required></textarea>
+        <textarea id="descripcion" class="form-control" required></textarea>
       </div>
       <div class="mb-3">
         <label class="form-label">Disponibilidad</label>
-        <input type="text" class="form-control" placeholder="Ejemplo: Lunes a Viernes: 9:00 - 18:00" required>
+        <input id="disponibilidad" type="text" class="form-control" required>
       </div>
       <div class="mb-3">
         <label class="form-label">Servicios ofrecidos</label>
-        <textarea class="form-control" placeholder="Ejemplo: Servicio básico - $50/hora, Servicio premium - $70/hora..." required></textarea>
+        <textarea id="servicios" class="form-control" required></textarea>
       </div>
       <div class="mb-3">
         <label class="form-label">Foto (URL)</label>
-        <input type="url" class="form-control" placeholder="Pega aquí el enlace de tu foto" required>
+        <input id="foto" type="url" class="form-control" required>
       </div>
       <button type="submit" class="btn btn-pink">Crear Oferta</button>
     </form>
@@ -98,15 +98,15 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const oferta = {
-      nombre: form[0].value,
-      especialidad: form[1].value,
-      ubicacion: form[2].value,
-      reseñas: form[3].value,
-      precio: form[4].value,
-      descripcion: form[5].value,
-      disponibilidad: form[6].value,
-      servicios: form[7].value,
-      foto: form[8].value
+      nombre: document.getElementById("nombre").value,
+      especialidad: document.getElementById("especialidad").value,
+      ubicacion: document.getElementById("ubicacion").value,
+      reseñas: document.getElementById("reseñas").value,
+      precio: document.getElementById("precio").value,
+      descripcion: document.getElementById("descripcion").value,
+      disponibilidad: document.getElementById("disponibilidad").value,
+      servicios: document.getElementById("servicios").value,
+      foto: document.getElementById("foto").value
     };
 
     try {
@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await res.json();
       alert(data.message || "Oferta creada correctamente");
       form.reset();
-      mostrarOfertasExplorar(); 
+      mostrarMisOfertas();
     } catch (err) {
       alert("No se pudo crear la oferta. Revisa la consola.");
       console.error(err);
@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
       explorar.innerHTML += '<p class="text-danger">Error cargando ofertas.</p>';
       console.error(err);
     }
-  } 
+  }
 
   // Mostrar ofertas del profesional (Mis Ofertas)
   async function mostrarMisOfertas() {
@@ -209,7 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       const data = await res.json();
       alert(data.message || "Oferta eliminada");
-      mostrarMisOfertas(); // refresca la lista
+      mostrarMisOfertas();
     } catch (err) {
       alert("Error al eliminar la oferta");
       console.error(err);
@@ -293,6 +293,5 @@ document.addEventListener("DOMContentLoaded", () => {
   window.onload = mostrarExplorar;
 });
 </script>
-
 </body>
 </html>
