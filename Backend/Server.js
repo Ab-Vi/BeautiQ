@@ -86,6 +86,18 @@ app.get("/ofertas", async (req, res) => {
     res.status(500).json({ message: "Error al obtener ofertas" });
   }
 });
+//eliminar oferta
+app.delete("/ofertas/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    await pool.query(`DELETE FROM ofertas WHERE id = $1`, [id]);
+    res.json({ message: "Oferta eliminada correctamente" });
+  } catch (err) {
+    console.error("Error al eliminar oferta:", err);
+    res.status(500).json({ message: "Error al eliminar la oferta" });
+  }
+});
+
 
 // ------------------- PUERTO -------------------
 const PORT = process.env.PORT || 4000;
