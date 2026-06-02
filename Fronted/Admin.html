@@ -88,11 +88,11 @@
     </form>
   </div>
 
- <script>
+<script>
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("formOferta");
   const explorar = document.getElementById("explorarSection");
-  const historial = document.getElementById("historialSection");
+  const historialSection = document.getElementById("historialSection");
   const ofertasSection = document.getElementById("ofertasSection");
 
   // Crear oferta en backend
@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Mostrar ofertas desde backend
+  // Mostrar ofertas (Explorar)
   async function mostrarOfertasExplorar() {
     explorar.innerHTML = '<h2 class="text-lila mb-4">Explorar Servicios</h2>';
     try {
@@ -165,88 +165,119 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error(err);
     }
   } 
-  // Función para eliminar oferta
-async function eliminarOferta(id) {
-  if (!confirm("¿Seguro que quieres eliminar esta oferta?")) return;
-  try {
-    const res = await fetch(`https://beautiq-hf9u.onrender.com/ofertas/${id}`, {
-      method: "DELETE"
-    });
-    const data = await res.json();
-    alert(data.message || "Oferta eliminada");
-    mostrarMisOfertas(); // refresca la lista
-  } catch (err) {
-    alert("Error al eliminar la oferta");
-    console.error(err);
-  }
-}
 
-  async function mostrarHistorial() {
-  historialSection.innerHTML = '<h2 class="text-lila mb-4">Historial de Citas</h2>';
-  try {
-    const res = await fetch("https://beautiq-hf9u.onrender.com/citas");
-    const citas = await res.json();
+  // Mostrar ofertas del profesional (Mis Ofertas)
+  async function mostrarMisOfertas() {
+    ofertasSection.innerHTML = '<h2 class="text-lila mb-4">Mis Ofertas</h2>';
+    try {
+      const res = await fetch("https://beautiq-hf9u.onrender.com/ofertas");
+      const ofertas = await res.json();
 
-    if (citas.length === 0) {
-      historialSection.innerHTML += '<p class="text-muted">No hay citas registradas aún.</p>';
-    } else {
-      let tabla = `
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th>Cliente</th>
-              <th>Servicio</th>
-              <th>Fecha</th>
-              <th>Hora</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
-          <tbody>`;
-      citas.forEach(c => {
-        tabla += `
-          <tr>
-            <td>${c.cliente}</td>
-            <td>${c.servicio}</td>
-            <td>${c.fecha}</td>
-            <td>${c.hora}</td>
-            <td>${c.estado}</td>
-          </tr>`;
-      });
-      tabla += `</tbody></table>`;
-      historialSection.innerHTML += tabla;
+      if (ofertas.length === 0) {
+        ofertasSection.innerHTML += '<p class="text-muted">No tienes ofertas creadas aún.</p>';
+      } else {
+        const row = document.createElement("div");
+        row.className = "row";
+        ofertas.forEach(o => {
+          const col = document.createElement("div");
+          col.className = "col-md-4 mb-4";
+          col.innerHTML = `
+            <div class="card shadow-sm">
+              <img src="${o.foto}" class="card-img-top" alt="${o.nombre}">
+              <div class="card-body">
+                <h5 class="card-title">${o.nombre}</h5>
+                <p class="card-text">${o.especialidad}</p>
+                <p class="fw-bold">${o.precio} COP</p>
+                <button class="btn btn-danger btn-sm" onclick="eliminarOferta(${o.id})">Eliminar</button>
+              </div>
+            </div>`;
+          row.appendChild(col);
+        });
+        ofertasSection.appendChild(row);
+      }
+    } catch (err) {
+      ofertasSection.innerHTML += '<p class="text-danger">Error cargando tus ofertas.</p>';
+      console.error(err);
     }
-  } catch (err) {
-    historialSection.innerHTML += '<p class="text-danger">Error cargando historial.</p>';
-    console.error(err);
   }
-}
 
+  // Función para eliminar oferta
+  window.eliminarOferta = async function(id) {
+    if (!confirm("¿Seguro que quieres eliminar esta oferta?")) return;
+    try {
+      const res = await fetch(`https://beautiq-hf9u.onrender.com/ofertas/${id}`, {
+        method: "DELETE"
+      });
+      const data = await res.json();
+      alert(data.message || "Oferta eliminada");
+      mostrarMisOfertas(); // refresca la lista
+    } catch (err) {
+      alert("Error al eliminar la oferta");
+      console.error(err);
+    }
+  }
 
-  // Mostrar historial (ejemplo, puedes adaptarlo a tu backend de citas)
-  async function mostrarHistorialAdmin() {
-    historial.innerHTML = '<h2 class="text-lila mb-4">Historial de Citas</h2>';
-    historial.innerHTML += '<p class="text-muted">Función pendiente de implementar.</p>';
+  // Mostrar historial de citas
+  async function mostrarHistorial() {
+    historialSection.innerHTML = '<h2 class="text-lila mb-4">Historial de Citas</h2>';
+    try {
+      const res = await fetch("https://beautiq-hf9u.onrender.com/citas");
+      const citas = await res.json();
+
+      if (citas.length === 0) {
+        historialSection.innerHTML += '<p class="text-muted">No hay citas registradas aún.</p>';
+      } else {
+        let tabla = `
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Servicio</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>`;
+        citas.forEach(c => {
+          tabla += `
+            <tr>
+              <td>${c.cliente}</td>
+              <td>${c.servicio}</td>
+              <td>${c.fecha}</td>
+              <td>${c.hora}</td>
+              <td>${c.estado}</td>
+            </tr>`;
+        });
+        tabla += `</tbody></table>`;
+        historialSection.innerHTML += tabla;
+      }
+    } catch (err) {
+      historialSection.innerHTML += '<p class="text-danger">Error cargando historial.</p>';
+      console.error(err);
+    }
   }
 
   // Funciones de navegación
   window.mostrarExplorar = function() {
     explorar.style.display = "block";
-    historial.style.display = "none";
+    historialSection.style.display = "none";
     ofertasSection.style.display = "none";
     mostrarOfertasExplorar();
   }
 
   window.mostrarHistorial = function() {
     explorar.style.display = "none";
-    historial.style.display = "block";
+    historialSection.style.display = "block";
     ofertasSection.style.display = "none";
-    mostrarHistorialAdmin();
+    mostrarHistorial();
   }
 
   window.mostrarOfertas = function() {
     explorar.style.display = "none";
-    historial.style.display = "none";
+    historialSection.style.display = "none";
     ofertasSection.style.display = "block";
+    mostrarMisOfertas();
   }
 
   // Cerrar sesión
