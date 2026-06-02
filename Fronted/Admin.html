@@ -110,16 +110,23 @@ document.addEventListener("DOMContentLoaded", () => {
       foto: form[8].value
     };
 
-    const res = await fetch("https://beautiq-hf9u.onrender.com/ofertas", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(oferta)
-    });
+    try {
+      const res = await fetch("https://beautiq-hf9u.onrender.com/ofertas", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(oferta)
+      });
 
-    const data = await res.json();
-    alert(data.message);
-    form.reset();
-    mostrarOfertasExplorar(); 
+      if (!res.ok) throw new Error("Error al crear oferta: " + res.status);
+
+      const data = await res.json();
+      alert(data.message || "Oferta creada correctamente");
+      form.reset();
+      mostrarOfertasExplorar(); 
+    } catch (err) {
+      alert("No se pudo crear la oferta. Revisa la consola.");
+      console.error(err);
+    }
   });
 
   // Mostrar ofertas desde backend
@@ -157,14 +164,15 @@ document.addEventListener("DOMContentLoaded", () => {
       explorar.innerHTML += '<p class="text-danger">Error cargando ofertas.</p>';
       console.error(err);
     }
-  
+  } // <- AQUÍ cerramos correctamente la función
+
   // Mostrar historial (ejemplo, puedes adaptarlo a tu backend de citas)
   async function mostrarHistorialAdmin() {
     historial.innerHTML = '<h2 class="text-lila mb-4">Historial de Citas</h2>';
     historial.innerHTML += '<p class="text-muted">Función pendiente de implementar.</p>';
   }
 
-   // Funciones de navegación
+  // Funciones de navegación
   window.mostrarExplorar = function() {
     explorar.style.display = "block";
     historial.style.display = "none";
@@ -185,7 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ofertasSection.style.display = "block";
   }
 
-  // Cerrar sesión (ahora sí accesible desde el botón)
+  // Cerrar sesión
   window.cerrarSesion = function() {
     alert("Sesión cerrada");
     window.location.href = "index.html";
@@ -194,7 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Inicializar en Explorar
   window.onload = mostrarExplorar;
 });
-
 </script>
+
 </body>
 </html>
