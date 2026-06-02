@@ -61,11 +61,11 @@ app.post("/login", async (req, res) => {
 // ------------------- OFERTAS -------------------
 
 // Crear oferta
-app.post("/Ofertas", async (req, res) => {
+app.post("/ofertas", async (req, res) => {
   try {
     const { nombre, especialidad, ubicacion, reseñas, precio, descripcion, disponibilidad, servicios, foto } = req.body;
     const result = await pool.query(
-      `INSERT INTO Ofertas (nombre, especialidad, ubicacion, reseñas, precio, descripcion, disponibilidad, servicios, foto, creado)
+      `INSERT INTO ofertas (nombre, especialidad, ubicacion, reseñas, precio, descripcion, disponibilidad, servicios, foto, creado)
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,NOW()) RETURNING *`,
       [nombre, especialidad, ubicacion, reseñas, precio, descripcion, disponibilidad, servicios, foto]
     );
@@ -77,9 +77,9 @@ app.post("/Ofertas", async (req, res) => {
 });
 
 // Listar ofertas
-app.get("/Ofertas", async (req, res) => {
+app.get("/ofertas", async (req, res) => {
   try {
-    const result = await pool.query(`SELECT * FROM Ofertas ORDER BY creado DESC`);
+    const result = await pool.query(`SELECT * FROM ofertas ORDER BY creado DESC`);
     res.json(result.rows);
   } catch (err) {
     console.error("Error al obtener ofertas:", err);
