@@ -157,15 +157,14 @@ document.addEventListener("DOMContentLoaded", () => {
       explorar.innerHTML += '<p class="text-danger">Error cargando ofertas.</p>';
       console.error(err);
     }
-  }
-
+  
   // Mostrar historial (ejemplo, puedes adaptarlo a tu backend de citas)
   async function mostrarHistorialAdmin() {
     historial.innerHTML = '<h2 class="text-lila mb-4">Historial de Citas</h2>';
     historial.innerHTML += '<p class="text-muted">Función pendiente de implementar.</p>';
   }
 
-  // Funciones de navegación
+   // Funciones de navegación
   window.mostrarExplorar = function() {
     explorar.style.display = "block";
     historial.style.display = "none";
@@ -184,9 +183,9 @@ document.addEventListener("DOMContentLoaded", () => {
     explorar.style.display = "none";
     historial.style.display = "none";
     ofertasSection.style.display = "block";
-    // aquí se muestra el formulario de creación de ofertas
   }
-      // Cerrar sesión
+
+  // Cerrar sesión (ahora sí accesible desde el botón)
   window.cerrarSesion = function() {
     alert("Sesión cerrada");
     window.location.href = "index.html";
@@ -194,6 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Inicializar en Explorar
   window.onload = mostrarExplorar;
+});
 
 </script>
 </body>
