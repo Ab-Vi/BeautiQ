@@ -186,9 +186,15 @@ document.addEventListener("DOMContentLoaded", () => {
     ofertasSection.style.display = "block";
     // aquí se muestra el formulario de creación de ofertas
   }
+      // Cerrar sesión
+  window.cerrarSesion = function() {
+    alert("Sesión cerrada");
+    window.location.href = "index.html";
+  }
 
   // Inicializar en Explorar
   window.onload = mostrarExplorar;
+});w.onload = mostrarExplorar;
 });
 </script>
 
