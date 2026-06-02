@@ -86,6 +86,10 @@
       </div>
       <button type="submit" class="btn btn-pink">Crear Oferta</button>
     </form>
+
+    <hr>
+    <h3 class="text-lila mb-3">Mis Ofertas creadas</h3>
+    <div id="misOfertasList"></div>
   </div>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
@@ -93,6 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const explorar = document.getElementById("explorarSection");
   const historialSection = document.getElementById("historialSection");
   const ofertasSection = document.getElementById("ofertasSection");
+  const misOfertasList = document.getElementById("misOfertasList");
 
   // Crear oferta en backend
   form.addEventListener("submit", async (e) => {
@@ -167,13 +172,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Mostrar ofertas del profesional (Mis Ofertas)
   async function mostrarMisOfertas() {
-    ofertasSection.innerHTML = '<h2 class="text-lila mb-4">Mis Ofertas</h2>';
+    misOfertasList.innerHTML = "";
     try {
       const res = await fetch("https://beautiq-hf9u.onrender.com/ofertas");
       const ofertas = await res.json();
 
       if (ofertas.length === 0) {
-        ofertasSection.innerHTML += '<p class="text-muted">No tienes ofertas creadas aún.</p>';
+        misOfertasList.innerHTML = '<p class="text-muted">No tienes ofertas creadas aún.</p>';
       } else {
         const row = document.createElement("div");
         row.className = "row";
@@ -192,10 +197,10 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>`;
           row.appendChild(col);
         });
-        ofertasSection.appendChild(row);
+        misOfertasList.appendChild(row);
       }
     } catch (err) {
-      ofertasSection.innerHTML += '<p class="text-danger">Error cargando tus ofertas.</p>';
+      misOfertasList.innerHTML = '<p class="text-danger">Error cargando tus ofertas.</p>';
       console.error(err);
     }
   }
@@ -293,5 +298,8 @@ document.addEventListener("DOMContentLoaded", () => {
   window.onload = mostrarExplorar;
 });
 </script>
+
+
+
 </body>
 </html>
