@@ -92,6 +92,8 @@
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("formOferta");
   const explorar = document.getElementById("explorarSection");
+  const historial = document.getElementById("historialSection");
+  const ofertasSection = document.getElementById("ofertasSection");
 
   // Crear oferta en backend
   form.addEventListener("submit", async (e) => {
@@ -157,8 +159,36 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Inicializar
-  window.onload = mostrarOfertasExplorar;
+  // Mostrar historial (ejemplo, puedes adaptarlo a tu backend de citas)
+  async function mostrarHistorialAdmin() {
+    historial.innerHTML = '<h2 class="text-lila mb-4">Historial de Citas</h2>';
+    historial.innerHTML += '<p class="text-muted">Función pendiente de implementar.</p>';
+  }
+
+  // Funciones de navegación
+  window.mostrarExplorar = function() {
+    explorar.style.display = "block";
+    historial.style.display = "none";
+    ofertasSection.style.display = "none";
+    mostrarOfertasExplorar();
+  }
+
+  window.mostrarHistorial = function() {
+    explorar.style.display = "none";
+    historial.style.display = "block";
+    ofertasSection.style.display = "none";
+    mostrarHistorialAdmin();
+  }
+
+  window.mostrarOfertas = function() {
+    explorar.style.display = "none";
+    historial.style.display = "none";
+    ofertasSection.style.display = "block";
+    // aquí se muestra el formulario de creación de ofertas
+  }
+
+  // Inicializar en Explorar
+  window.onload = mostrarExplorar;
 });
 </script>
 
