@@ -97,6 +97,32 @@ app.delete("/ofertas/:id", async (req, res) => {
     res.status(500).json({ message: "Error al eliminar la oferta" });
   }
 });
+// Crear cita
+app.post("/citas", async (req, res) => {
+  try {
+    const { cliente, profesional, servicio, fecha, hora, precio, estado } = req.body;
+    const result = await pool.query(
+      `INSERT INTO citas (cliente, profesional, servicio, fecha, hora, precio, estado)
+       VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
+      [cliente, profesional, servicio, fecha, hora, precio, estado]
+    );
+    res.json({ message: "Cita creada correctamente", cita: result.rows[0] });
+  } catch (err) {
+    console.error("Error al crear cita:", err);
+    res.status(500).json({ message: "Error al crear la cita" });
+  }
+});
+
+// Listar citas
+app.get("/citas", async (req, res) => {
+  try {
+    const result = await pool.query(`SELECT * FROM citas ORDER BY fecha DESC, hora DESC`);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error al obtener citas:", err);
+    res.status(500).json({ message: "Error al obtener citas" });
+  }
+});
 
 
 // ------------------- PUERTO -------------------
