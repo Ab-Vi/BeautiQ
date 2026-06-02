@@ -181,6 +181,47 @@ async function eliminarOferta(id) {
   }
 }
 
+  async function mostrarHistorial() {
+  historialSection.innerHTML = '<h2 class="text-lila mb-4">Historial de Citas</h2>';
+  try {
+    const res = await fetch("https://beautiq-hf9u.onrender.com/citas");
+    const citas = await res.json();
+
+    if (citas.length === 0) {
+      historialSection.innerHTML += '<p class="text-muted">No hay citas registradas aún.</p>';
+    } else {
+      let tabla = `
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Servicio</th>
+              <th>Fecha</th>
+              <th>Hora</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>`;
+      citas.forEach(c => {
+        tabla += `
+          <tr>
+            <td>${c.cliente}</td>
+            <td>${c.servicio}</td>
+            <td>${c.fecha}</td>
+            <td>${c.hora}</td>
+            <td>${c.estado}</td>
+          </tr>`;
+      });
+      tabla += `</tbody></table>`;
+      historialSection.innerHTML += tabla;
+    }
+  } catch (err) {
+    historialSection.innerHTML += '<p class="text-danger">Error cargando historial.</p>';
+    console.error(err);
+  }
+}
+
+
   // Mostrar historial (ejemplo, puedes adaptarlo a tu backend de citas)
   async function mostrarHistorialAdmin() {
     historial.innerHTML = '<h2 class="text-lila mb-4">Historial de Citas</h2>';
