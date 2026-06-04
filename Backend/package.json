@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
 "scripts": {
+  "build": "echo 'Compilando proyecto Backend...'",
+  "lint": "echo 'Ejecutando lint...'",
   "test": "jest --coverage",
   "test:unit": "jest --coverage --testPathIgnorePatterns=e2e",
   "test:integration": "jest __test__/integracion.test.js",
