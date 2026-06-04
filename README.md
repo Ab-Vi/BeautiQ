@@ -14,3 +14,10 @@ El sistema incluye un backend en Node.js y un frontend en HTML/JS, con despliegu
 La API está documentada con Swagger.
 2. Acceso en producción:
 https://beautiq-backend.onrender.com/api-docs
+
+/**
+ * Registra un nuevo usuario en el sistema.
+ * @param {Object} datosUsuario - Información del usuario.
+ * @returns {Promise<Object>} Usuario creado.
+ */
+async function registrarUsuario(datosUsuario) { ... }
