@@ -16,3 +16,32 @@ La API está documentada con Swagger.
 https://beautiq-backend.onrender.com/api-docs
 
 
+Arquitectura general del sistema
+Frontend: interfaz de usuario (HTML, CSS, JS).
+
+Backend: API REST en Node.js/Express.
+
+Base de datos: PostgreSQL (Railway).
+
+CI/CD: GitHub Actions para build, lint, test y deploy.
+
+Despliegue: Render (backend) y Railway (base de datos).
+
+Contenedores: Dockerfile y docker-compose para ejecución local.
+
+Tecnologías utilizadas
+Node.js
+
+Express.js
+
+PostgreSQL
+
+Jest (pruebas unitarias e integración)
+
+Playwright (pruebas end-to-end)
+
+GitHub Actions (CI/CD)
+
+Render / Railway (despliegue)
+
+Docker y Docker Compose (configuración de contenedores)
