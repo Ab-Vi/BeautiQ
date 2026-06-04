@@ -15,12 +15,19 @@ const pool = new Pool({
 });
 
 // Servir archivos estáticos desde la carpeta Frontend
-app.use(express.static(path.join(__dirname, "../Fronted")));
+const frontendPath = path.resolve(__dirname, "../Frontend");
+console.log(" Sirviendo estáticos desde:", frontendPath);
+
+app.use(express.static(frontendPath));
 
 // Ruta raíz: devuelve index.html por defecto
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../Fronted/index.html"));
+  res.sendFile(path.resolve(frontendPath, "index.html"));
 });
+
+
+
+
 
 // ------------------- USUARIOS -------------------
 
@@ -127,7 +134,18 @@ app.get("/citas", async (req, res) => {
 
 // ------------------- PUERTO -------------------
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en puerto ${PORT}`);
-});
 
+// Exportar app para pruebas
+module.exports = app;
+
+// Iniciar servidor solo si se ejecuta directamente
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Servidor corriendo en puerto ${PORT}`);
+  });
+}// server.js
+const app = require("./app");
+
+app.listen(4000, () => {
+  console.log("Servidor corriendo en puerto 4000");
+});
