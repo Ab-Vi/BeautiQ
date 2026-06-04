@@ -16,7 +16,7 @@ La API está documentada con Swagger.
 https://beautiq-backend.onrender.com/api-docs
 
 
-Arquitectura general del sistema
+## Arquitectura general del sistema
 Frontend: interfaz de usuario (HTML, CSS, JS).
 
 Backend: API REST en Node.js/Express.
@@ -29,7 +29,7 @@ Despliegue: Render (backend) y Railway (base de datos).
 
 Contenedores: Dockerfile y docker-compose para ejecución local.
 
-Tecnologías utilizadas
+## Tecnologías utilizadas
 Node.js
 
 Express.js
