@@ -10,3 +10,7 @@ El sistema incluye un backend en Node.js y un frontend en HTML/JS, con despliegu
 1. Clonar el repositorio:
    ```bash
    git clone https://github.com/usuario/BeautiQ.git
+   
+La API está documentada con Swagger.
+2. Acceso en producción:
+https://beautiq-backend.onrender.com/api-docs
