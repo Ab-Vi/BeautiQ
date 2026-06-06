@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BeautiQ - Admin</title>
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background-color: #ffffff; }
+    .navbar-brand { color: #A78BFA !important; font-weight: bold; }
+    .nav-link { color: #6b7280 !important; cursor: pointer; }
+    .nav-link:hover { color: #A78BFA !important; }
+    .btn-pink { background-color: #FBCFE8; color: #1F2937; font-weight: 600; }
+    .btn-pink:hover { background-color: #F9A8D4; }
+    .text-lila { color: #A78BFA; }
+    .card-title { color: #A78BFA; font-weight: bold; }
+    .card-img-top {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Barra de navegación -->
+  <nav class="navbar navbar-expand-lg bg-white shadow-sm">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">BeautiQ Admin</a>
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" onclick="mostrarExplorar()">Explorar</a></li>
+        <li class="nav-item"><a class="nav-link" onclick="mostrarHistorial()">Historial</a></li>
+        <li class="nav-item"><a class="nav-link" onclick="mostrarOfertas()">Mis Ofertas</a></li>
+        <li class="nav-item"><button class="btn btn-outline-danger" onclick="cerrarSesion()">Cerrar sesión</button></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Sección Explorar -->
+  <div id="explorarSection" class="container mt-4"></div>
+
+  <!-- Sección Historial -->
+  <div id="historialSection" class="container mt-4" style="display:none;"></div>
+
+  <!-- Sección Mis Ofertas -->
+  <div id="ofertasSection" class="container mt-4" style="display:none;">
+    <h2 class="text-lila mb-4">Crear Oferta Profesional</h2>
+    <form id="formOferta">
+      <div class="mb-3">
+        <label class="form-label">Nombre completo</label>
+        <input id="nombre" type="text" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Especialidad</label>
+        <input id="especialidad" type="text" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Ubicación</label>
+        <input id="ubicacion" type="text" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Reseñas</label>
+        <input id="reseñas" type="text" class="form-control">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Precio</label>
+        <input id="precio" type="text" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Sobre el profesional</label>
+        <textarea id="descripcion" class="form-control" required></textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Disponibilidad</label>
+        <input id="disponibilidad" type="text" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Servicios ofrecidos</label>
+        <textarea id="servicios" class="form-control" required></textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Foto (URL)</label>
+        <input id="foto" type="url" class="form-control" required>
+      </div>
+      <button type="submit" class="btn btn-pink">Crear Oferta</button>
+    </form>
+
+    <hr>
+    <h3 class="text-lila mb-3">Mis Ofertas creadas</h3>
+    <div id="misOfertasList"></div>
+  </div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("formOferta");
+  const explorar = document.getElementById("explorarSection");
+  const historialSection = document.getElementById("historialSection");
+  const ofertasSection = document.getElementById("ofertasSection");
+  const misOfertasList = document.getElementById("misOfertasList");
+
+  // Crear oferta en backend
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const oferta = {
+      nombre: document.getElementById("nombre").value,
+      especialidad: document.getElementById("especialidad").value,
+      ubicacion: document.getElementById("ubicacion").value,
+      reseñas: document.getElementById("reseñas").value,
+      precio: document.getElementById("precio").value,
+      descripcion: document.getElementById("descripcion").value,
+      disponibilidad: document.getElementById("disponibilidad").value,
+      servicios: document.getElementById("servicios").value,
+      foto: document.getElementById("foto").value
+    };
+
+    try {
+      const res = await fetch("https://beautiq-hf9u.onrender.com/ofertas", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(oferta)
+      });
+
+      if (!res.ok) throw new Error("Error al crear oferta: " + res.status);
+
+      const data = await res.json();
+      alert(data.message || "Oferta creada correctamente");
+      form.reset();
+      mostrarMisOfertas();
+    } catch (err) {
+      alert("No se pudo crear la oferta. Revisa la consola.");
+      console.error(err);
+    }
+  });
+
+  // Mostrar ofertas (Explorar)
+  async function mostrarOfertasExplorar() {
+    explorar.innerHTML = '<h2 class="text-lila mb-4">Explorar Servicios</h2>';
+    try {
+      const res = await fetch("https://beautiq-hf9u.onrender.com/ofertas");
+      const ofertas = await res.json();
+
+      if (ofertas.length === 0) {
+        explorar.innerHTML += '<p class="text-muted">No hay ofertas creadas aún.</p>';
+      } else {
+        const row = document.createElement("div");
+        row.className = "row";
+        ofertas.forEach(o => {
+          const col = document.createElement("div");
+          col.className = "col-md-4 mb-4";
+          col.innerHTML = `
+            <div class="card shadow-sm">
+              <img src="${o.foto}" class="card-img-top" alt="${o.nombre}">
+              <div class="card-body">
+                <h5 class="card-title">${o.nombre}</h5>
+                <p class="card-text">${o.especialidad}</p>
+                <p class="text-muted">Ubicación: ${o.ubicacion}</p>
+                <p class="fw-bold">${o.precio} COP</p>
+                <p class="text-muted">Reseñas: ${o.reseñas}</p>
+                <p class="text-muted">Creado: ${o.creado}</p>
+              </div>
+            </div>`;
+          row.appendChild(col);
+        });
+        explorar.appendChild(row);
+      }
+    } catch (err) {
+      explorar.innerHTML += '<p class="text-danger">Error cargando ofertas.</p>';
+      console.error(err);
+    }
+  }
+
+  // Mostrar ofertas del profesional (Mis Ofertas)
+  async function mostrarMisOfertas() {
+    misOfertasList.innerHTML = "";
+    try {
+      const res = await fetch("https://beautiq-hf9u.onrender.com/ofertas");
+      const ofertas = await res.json();
+
+      if (ofertas.length === 0) {
+        misOfertasList.innerHTML = '<p class="text-muted">No tienes ofertas creadas aún.</p>';
+      } else {
+        const row = document.createElement("div");
+        row.className = "row";
+        ofertas.forEach(o => {
+          const col = document.createElement("div");
+          col.className = "col-md-4 mb-4";
+          col.innerHTML = `
+            <div class="card shadow-sm">
+              <img src="${o.foto}" class="card-img-top" alt="${o.nombre}">
+              <div class="card-body">
+                <h5 class="card-title">${o.nombre}</h5>
+                <p class="card-text">${o.especialidad}</p>
+                <p class="fw-bold">${o.precio} COP</p>
+                <button class="btn btn-danger btn-sm" onclick="eliminarOferta(${o.id})">Eliminar</button>
+              </div>
+            </div>`;
+          row.appendChild(col);
+        });
+        misOfertasList.appendChild(row);
+      }
+    } catch (err) {
+      misOfertasList.innerHTML = '<p class="text-danger">Error cargando tus ofertas.</p>';
+      console.error(err);
+    }
+  }
+
+  // Función para eliminar oferta
+  window.eliminarOferta = async function(id) {
+    if (!confirm("¿Seguro que quieres eliminar esta oferta?")) return;
+    try {
+      const res = await fetch(`https://beautiq-hf9u.onrender.com/ofertas/${id}`, {
+        method: "DELETE"
+      });
+      const data = await res.json();
+      alert(data.message || "Oferta eliminada");
+      mostrarMisOfertas();
+    } catch (err) {
+      alert("Error al eliminar la oferta");
+      console.error(err);
+    }
+  }
+
+  // Mostrar historial de citas
+  async function mostrarHistorial() {
+    historialSection.innerHTML = '<h2 class="text-lila mb-4">Historial de Citas</h2>';
+    try {
+      const res = await fetch("https://beautiq-hf9u.onrender.com/citas");
+      const citas = await res.json();
+
+      if (citas.length === 0) {
+        historialSection.innerHTML += '<p class="text-muted">No hay citas registradas aún.</p>';
+      } else {
+        let tabla = `
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Profesional</th>
+                <th>Servicio</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Precio</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>`;
+        citas.forEach(c => {
+          tabla += `
+            <tr>
+              <td>${c.cliente}</td>
+              <td>${c.profesional}</td>
+              <td>${c.servicio}</td>
+              <td>${c.fecha}</td>
+              <td>${c.hora}</td>
+              <td>${c.precio}</td>
+              <td>${c.estado}</td>
+            </tr>`;
+        });
+        tabla += `</tbody></table>`;
+        historialSection.innerHTML += tabla;
+      }
+    } catch (err) {
+      historialSection.innerHTML += '<p class="text-danger">Error cargando historial.</p>';
+      console.error(err);
+    }
+  }
+
+  // Funciones de navegación
+  window.mostrarExplorar = function() {
+    explorar.style.display = "block";
+    historialSection.style.display = "none";
+    ofertasSection.style.display = "none";
+    mostrarOfertasExplorar();
+  }
+
+  window.mostrarHistorial = function() {
+    explorar.style.display = "none";
+    historialSection.style.display = "block";
+    ofertasSection.style.display = "none";
+    mostrarHistorial();
+  }
+
+  window.mostrarOfertas = function() {
+    explorar.style.display = "none";
+    historialSection.style.display = "none";
+    ofertasSection.style.display = "block";
+    mostrarMisOfertas();
+  }
+
+  // Cerrar sesión
+  window.cerrarSesion = function() {
+    alert("Sesión cerrada");
+    window.location.href = "index.html";
+  }
+
+  // Inicializar en Explorar
+  window.onload = mostrarExplorar;
+});
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BeautiQ - Menu Cliente</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .btn-pink { background-color: #FBCFE8; color: #1F2937; font-weight: 600; }
+    .btn-pink:hover { background-color: #F9A8D4; }
+    .text-lila { color: #A78BFA; }
+    .estado-confirmado { color: green; font-weight: bold; }
+    .card-img-top {
+  width: 100%;
+  height: 200px;       /* altura fija para todas las imágenes */
+  object-fit: cover;   /* recorta proporcionalmente sin deformar */
+  border-radius: 5px;  /* opcional, esquinas redondeadas */
+}
+  </style>
+</head>
+<body>
+
+  <!-- Barra de navegación -->
+  <nav class="navbar navbar-expand-lg bg-white shadow-sm">
+    <div class="container-fluid">
+      <a class="navbar-brand text-lila" href="#">BeautiQ Cliente</a>
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" onclick="mostrarExplorar()">Explorar</a></li>
+        <li class="nav-item"><a class="nav-link" onclick="mostrarHistorial()">Historial</a></li>
+        <li class="nav-item"><button class="btn btn-outline-danger" onclick="cerrarSesion()">Cerrar sesión</button></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Sección Explorar -->
+  <div id="menuSection" class="container mt-4"></div>
+
+  <!-- Sección Historial -->
+  <div id="historialSection" class="container mt-4" style="display:none;"></div>
+
+  <!-- Modal Detalles -->
+  <div class="modal fade" id="modalDetalles" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-lila" id="detalleNombre"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <img id="detalleFoto" class="img-fluid mb-3" alt="Foto profesional">
+          <p><strong>Especialidad:</strong> <span id="detalleEspecialidad"></span></p>
+          <p><strong>Ubicación:</strong> <span id="detalleUbicacion"></span></p>
+          <p><strong>Precio:</strong> <span id="detallePrecio"></span></p>
+          <p><strong>Reseñas:</strong> <span id="detalleResenas"></span></p>
+          <p><strong>Disponibilidad:</strong> <span id="detalleDisponibilidad"></span></p>
+          <p><strong>Servicios:</strong> <span id="detalleServicios"></span></p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-pink" onclick="abrirAgendar()">Agendar cita</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Agendar -->
+  <div class="modal fade" id="agendarMaria" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-lila">Agendar cita</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Tu nombre</label>
+            <input type="text" id="nombreCliente" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Fecha</label>
+            <input type="date" id="fechaMaria" class="form-control" required>
+          </div>
+          <div class="mb-3" id="horasMaria">
+            <label class="form-label">Hora</label><br>
+            <button type="button" class="btn btn-outline-secondary" onclick="seleccionarHora('10:00')">10:00</button>
+            <button type="button" class="btn btn-outline-secondary" onclick="seleccionarHora('11:00')">11:00</button>
+            <button type="button" class="btn btn-outline-secondary" onclick="seleccionarHora('14:00')">14:00</button>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-pink" onclick="confirmarCita()">Confirmar cita</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Subir Comprobante -->
+  <div class="modal fade" id="subirComprobante" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-lila">Subir comprobante de pago</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <h6 class="text-lila">Información de pago</h6>
+          <p><strong>Banco:</strong> Banco Nacional</p>
+          <p><strong>Cuenta:</strong> 1234-5678-9012-3456</p>
+          <p><strong>Titular:</strong> BeautiQ S.A.</p>
+          <p><strong>Referencia:</strong> Cita #12345</p>
+          <h6 class="text-lila mt-3">Comprobante de pago</h6>
+          <input type="file" id="archivoComprobante" class="form-control mb-2">
+          <small class="text-muted">Haz clic para subir o arrastra el archivo</small>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-pink" onclick="enviarComprobante()">Enviar comprobante</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Éxito -->
+  <div class="modal fade" id="exitoComprobante" tabindex="-1">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+      <div class="modal-content text-center p-4">
+        <div class="modal-body">
+          <span style="font-size:50px; color:#A78BFA;">✔</span>
+          <h5 class="text-lila">¡Comprobante enviado!</h5>
+          <p class="text-muted">Tu pago será verificado en breve.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  let horaSeleccionada = "";
+  let detalleOferta = {};
+  window.ofertasGlobal = [];
+
+  // Selección de hora
+  function seleccionarHora(hora) {
+    horaSeleccionada = hora;
+    const botones = document.querySelectorAll("#horasMaria button");
+    botones.forEach(btn => btn.classList.remove("btn-pink"));
+    const boton = Array.from(botones).find(b => b.textContent === hora);
+    if(boton) boton.classList.add("btn-pink");
+  }
+
+  // Mostrar ofertas en Explorar (desde backend)
+  async function mostrarExplorar() {
+    document.getElementById("menuSection").style.display = "block";
+    document.getElementById("historialSection").style.display = "none";
+
+    const explorar = document.getElementById("menuSection");
+    explorar.innerHTML = '<h2 class="text-lila mb-4">Explorar Servicios</h2>';
+
+    try {
+      const res = await fetch("https://beautiq-hf9u.onrender.com/ofertas");
+      const ofertas = await res.json();
+      window.ofertasGlobal = ofertas;
+
+      if(ofertas.length === 0){
+        explorar.innerHTML += '<p class="text-muted">No hay servicios disponibles aún.</p>';
+      } else {
+        const row = document.createElement("div");
+        row.className = "row";
+        ofertas.forEach((o, index) => {
+          const col = document.createElement("div");
+          col.className = "col-md-4 mb-4";
+          col.innerHTML = `
+            <div class="card shadow-sm">
+              <img src="${o.foto}" class="card-img-top" alt="${o.nombre}">
+              <div class="card-body">
+                <h5 class="card-title">${o.nombre}</h5>
+                <p class="card-text">${o.especialidad}</p>
+                <p class="text-muted">Ubicación: ${o.ubicacion}</p>
+                <p class="fw-bold">${o.precio} COP</p>
+                <p class="text-muted">Reseñas: ${o.reseñas}</p>
+                <p class="text-muted">Creado: ${o.creado}</p>
+                <button class="btn btn-pink w-100" onclick="verDetalles(${index})">Ver detalles</button>
+              </div>
+            </div>`;
+          row.appendChild(col);
+        });
+        explorar.appendChild(row);
+      }
+    } catch (err) {
+      explorar.innerHTML += '<p class="text-danger">Error cargando ofertas.</p>';
+      console.error(err);
+    }
+  }
+
+  // Ver detalles de oferta
+  function verDetalles(index) {
+    detalleOferta = window.ofertasGlobal[index];
+    document.getElementById("detalleNombre").textContent = detalleOferta.nombre;
+    document.getElementById("detalleEspecialidad").textContent = detalleOferta.especialidad;
+    document.getElementById("detalleUbicacion").textContent = detalleOferta.ubicacion;
+    document.getElementById("detallePrecio").textContent = detalleOferta.precio;
+    document.getElementById("detalleResenas").textContent = detalleOferta.reseñas;
+    document.getElementById("detalleDisponibilidad").textContent = detalleOferta.disponibilidad;
+    document.getElementById("detalleServicios").textContent = detalleOferta.servicios;
+    document.getElementById("detalleFoto").src = detalleOferta.foto;
+    const modalDetalles = new bootstrap.Modal(document.getElementById("modalDetalles"));
+    modalDetalles.show();
+  }
+
+  // Abrir modal de agendar
+  function abrirAgendar() {
+    const modalDetalles = bootstrap.Modal.getInstance(document.getElementById("modalDetalles"));
+    modalDetalles.hide();
+    const modalAgendar = new bootstrap.Modal(document.getElementById("agendarMaria"));
+    modalAgendar.show();
+  }
+
+  // Confirmar cita (guardar en backend)
+  async function confirmarCita() {
+    const fecha = document.getElementById("fechaMaria").value;
+    const cliente = document.getElementById("nombreCliente").value; // input del cliente
+    if(fecha && horaSeleccionada && cliente){
+      const cita = {
+        cliente: cliente,
+        profesional: detalleOferta.nombre,
+        servicio: detalleOferta.especialidad,
+        fecha: fecha,
+        hora: horaSeleccionada,
+        precio: detalleOferta.precio,
+        estado: "pendiente"
+      };
+
+      try {
+        const res = await fetch("https://beautiq-hf9u.onrender.com/citas", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(cita)
+        });
+
+        if (!res.ok) throw new Error("Error al crear cita: " + res.status);
+
+        const data = await res.json();
+        alert(data.message || "¡Cita confirmada!");
+        mostrarHistorial(); // refresca historial del cliente
+        const modalAgendar = bootstrap.Modal.getInstance(document.getElementById("agendarMaria"));
+        modalAgendar.hide();
+        const modalComprobante = new bootstrap.Modal(document.getElementById("subirComprobante"));
+        modalComprobante.show();
+      } catch (err) {
+        alert("No se pudo crear la cita. Revisa la consola.");
+        console.error(err);
+      }
+    } else {
+      alert("Debes ingresar tu nombre, fecha y hora antes de confirmar.");
+    }
+  }
+
+  // Enviar comprobante
+  function enviarComprobante() {
+    const archivo = document.getElementById("archivoComprobante").files[0];
+    if(archivo){
+      const modalComp = bootstrap.Modal.getInstance(document.getElementById("subirComprobante"));
+      modalComp.hide();
+      const modalExito = new bootstrap.Modal(document.getElementById("exitoComprobante"));
+      modalExito.show();
+    } else {
+      alert("Por favor selecciona un archivo antes de enviar.");
+    }
+  }
+
+  // Mostrar historial (desde backend)
+  async function mostrarHistorial() {
+    document.getElementById("menuSection").style.display = "none";
+    document.getElementById("historialSection").style.display = "block";
+    const historial = document.getElementById("historialSection");
+    historial.innerHTML = '<h2 class="text-lila mb-4">Mi Historial</h2>';
+
+    try {
+      const res = await fetch("https://beautiq-hf9u.onrender.com/citas");
+      const citas = await res.json();
+
+      if(citas.length === 0){
+        historial.innerHTML += '<p class="text-muted">No tienes citas aún.</p>';
+      } else {
+        citas.forEach(c => {
+          const card = document.createElement("div");
+          card.className = "card shadow-sm mb-3";
+          card.innerHTML = `
+            <div class="card-body">
+              <h5 class="card-title">${c.cliente}</h5>
+              <p class="card-text">Profesional: ${c.profesional}</p>
+              <p class="card-text">Servicio: ${c.servicio}</p>
+              <p class="card-text">Fecha: ${c.fecha}</p>
+              <p class="card-text">Hora: ${c.hora}</p>
+              <p class="card-text">Precio: ${c.precio}</p>
+              <p class="estado-confirmado">Estado: ${c.estado}</p>
+            </div>`;
+          historial.appendChild(card);
+        });
+      }
+    } catch (err) {
+      historial.innerHTML += '<p class="text-danger">Error cargando historial.</p>';
+      console.error(err);
+    }
+  }
+
+  // Cerrar sesión
+  function cerrarSesion() {
+    alert("Sesión cerrada");
+    window.location.href = "index.html";
+  }
+
+  // Inicializar
+  window.onload = mostrarExplorar;
+</script>
+
+</body>
+</html>

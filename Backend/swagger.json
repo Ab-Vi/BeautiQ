@@ -1,0 +1,36 @@
+openapi: 3.0.0
+info:
+  title: BeautiQ API
+  version: 1.0.0
+  description: Documentación de la API del sistema BeautiQ
+servers:
+  - url: https://beautiq-backend.onrender.com
+paths:
+  /usuarios:
+    post:
+      summary: Crear usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+      responses:
+        '201':
+          description: Usuario creado exitosamente
+    get:
+      summary: Listar usuarios
+      responses:
+        '200':
+          description: Lista de usuarios
+  /citas:
+    post:
+      summary: Registrar cita
+      responses:
+        '201':
+          description: Cita registrada
+    get:
+      summary: Consultar citas
+      responses:
+        '200':
+          description: Lista de citas
