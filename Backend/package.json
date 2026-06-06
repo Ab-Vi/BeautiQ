@@ -6,7 +6,7 @@
 "scripts": {
   "build": "echo 'Compilando proyecto Backend...'",
   "lint": "echo 'Ejecutando lint...'",
-  "test": "jest --coverage",
+  "test": "jest --coverage",     
   "test:unit": "jest --coverage --testPathIgnorePatterns=e2e",
   "test:integration": "jest __test__/integracion.test.js",
   "test:e2e": "playwright test e2e"
